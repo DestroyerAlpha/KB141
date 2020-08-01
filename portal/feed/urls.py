@@ -8,6 +8,8 @@ from .views import (
     UserPostListView,
     PostLikeView,
     add_comment_to_post,
+    PostSaveView,
+    UserPostSaveView,
     PaperPostCreateView,
 )
 from . import views
@@ -20,5 +22,7 @@ urlpatterns = [
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     path('post/<int:pk>/comment/', views.add_comment_to_post, name='add_comment_to_post'),
+    path('save/<int:postid>/<int:num>', views.PostSaveView, name='save'),
+    path('bookmarks', UserPostSaveView.as_view(), name = "bookmark"),
     path('create/paper/<int:paperid>', PaperPostCreateView.as_view(), name='paper-post-create'),
 ]

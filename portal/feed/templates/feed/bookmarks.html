@@ -1,0 +1,125 @@
+{% extends 'home/index.html' %}
+{% block content %}
+<script>
+$(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
+});
+</script>
+<div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="border-bottom text-center pb-4">
+                  {% if user.profile.institute_email|length > 0 %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="profile" class="img-md rounded-circle mb-3" width="40%">
+                  {% else %}
+                    <img src="{{ user.corporate_profile.profile_picture.url }}" alt="profile" class="img-md rounded-circle mb-3" width="40%">
+                  {% endif %}
+                    <div class="mb-3">
+                      <a href="{% url 'user-profile' user.username %}"><h3>{{ user.username }}</h3></a>
+                    </div>
+                    <p class="w-75 mx-auto mb-3">Insert about me</p>
+                  </div>
+                  <div class="border-bottom py-4">
+                    <p>Authors Followed</p>
+                    <div>
+                    {% if user.profile.institute_email|length > 0 %}
+                    {% for author in user.profile.authors_followed.all %}
+                      <label class="badge badge-outline-dark">{{ author }}</label>
+                      {% empty %}
+                      None
+                    {% endfor %}
+                    {% else %}
+                    {% for author in user.corporate_profile.authors_followed.all %}
+                      <label class="badge badge-outline-dark">{{ author }}</label>
+                      {% empty %}
+                      None
+                    {% endfor %}
+                    {% endif %}
+                    </div>
+                  </div>
+                  <div class="border-bottom py-4">
+                    <div class="d-flex mb-3">
+                      <div class="progress progress-md flex-grow">
+                        <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="55" style="width: 55%" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="progress progress-md flex-grow">
+                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" style="width: 75%" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="mt-4 py-2 border-top border-bottom">
+                    <ul class="nav profile-navbar">
+                        <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'feed' %}">
+                            <i class="mdi mdi-newspaper"></i>
+                            Saved Posts
+                        </a>
+                        </li>
+                    </ul>
+                    </div>
+                    <div class="profile-feed">
+                    {% for post in posts %}
+                        {% if user in post.post_save.all %}
+                            <div class="d-flex align-items-start profile-feed-item">
+                                <img src="{{ post.author.profile_picture.url }}" alt="profile" class="img-sm rounded-circle">
+                                <div class="ml-4">
+                                <h6>
+                                    <a href = "{% url 'user-profile' post.author %}">{{ post.author }}</a>
+                                    <small class="ml-4 text-muted"><i class="mdi mdi-clock mr-1"></i>{{ post.date_posted|date:"F d, Y" }}</small>
+                                </h6>
+                                <hr>
+                                <p>
+                                    {{ post.content }}
+                                </p>
+                                <p>
+                                  {% if post.paper != None %}
+                                    <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                                  {% endif %}
+                                </p>
+                                <p class="small text-muted mt-2 mb-0">
+                                <a href="{% url 'post-detail' post.id %}">
+                                    <span>
+                                    <i class="mdi mdi-star"></i>{{ post.post_like.all.count }}
+                                    </span>
+                                    <span class="ml-2">
+                                    <i class="mdi mdi-comment mr-1"></i>
+                                        {{ post.comment_post_key.all.count }}
+                                    </span>
+                                    </a>
+                                    <a href="{% url 'save' post.id 2 %}">
+                                        {% if user in post.post_save.all %}
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M3 3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12l-5-3-5 3V3z"/>
+                                            </svg>
+                                        {% else %}
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 12l5 3V3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l5-3zm-4 1.234l4-2.4 4 2.4V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10.234z"/>
+                                            </svg>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% empty %}
+                            <p>No Bookmarks <p>
+                    {% endfor %}
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content%}
