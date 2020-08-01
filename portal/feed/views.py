@@ -145,6 +145,13 @@ def PostLikeView(request, postid):
             post.paper.liked_by.add(profile)
     return redirect('post-detail', post.id)
 
+def CommentLikeView(request, commentid, postid):
+    comment = Comment.objects.get(id=commentid)
+    if request.user in comment.comment_like.all():
+        comment.comment_like.remove(request.user)
+    else:
+        comment.comment_like.add(request.user)
+    return redirect('post-detail', postid)
 
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
