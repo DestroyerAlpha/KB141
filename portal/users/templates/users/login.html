@@ -1,0 +1,18 @@
+{% extends 'home/index.html' %}
+
+{% block content %}
+
+    <center>
+    <form method="POST"">
+        <ul>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <li class = "form_fields">{{ field.label_tag }}</li>
+        <li>{{ field }}</li>
+        {% endfor %}
+        </ul>
+        <!-- {{ form }} -->
+        <button type="submit"> Login</button>
+    </form>
+    </center>
+{% endblock content %}
