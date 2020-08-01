@@ -3,6 +3,7 @@
 {% block content %}
     <h3>{{ special }}</h3>
     {% if search == False %}
+    <!-- Search is false means that the search feild was null so diaplay all the papers and users -->
     <div class="block" style=" padding-right: 20%; padding-left: 20px; padding-top : 20px">
         <ul class="nav nav-tabs">
             <li class="active"><a class="nav-link active" data-toggle="pill" href="#papers">Paper</a></li>
@@ -75,6 +76,7 @@
 
 
 
+        <!-- here display all the serach results  -->
     <h3> Showing results for {{ name }}</h3>
     <div class="block" style=" padding-right: 20%; padding-left: 20px; padding-top : 20px">
         <ul class="nav nav-tabs">
@@ -151,6 +153,7 @@
                 </div>
             </div>
 
+                <!-- USers panel -->
         
             <div id="users" class="tab-pane fade" role="tabpanel">
                 <div class="accordion" id="usersacc">
