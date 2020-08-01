@@ -17,3 +17,21 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('feed')
 
+
+class Comment(models.Model):
+    class Meta:
+        db_table = "comment"
+    comment_post = models.ForeignKey('Post',
+        related_name='comment_post_key',
+        on_delete=models.CASCADE
+    )
+    comment_author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="comment_author_key"
+    )
+    comment_text = models.TextField()
+    comment_created_date = models.DateTimeField(
+        default=timezone.now
+    )
+    comment_like = models.ManyToManyField(User, blank=True, related_name="comment_liked")
