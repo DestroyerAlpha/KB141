@@ -23,7 +23,6 @@ class PostListView(ListView):
     ordering = ['-date_posted']
 
 
-
 class UserPostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'feed/feed.html'
@@ -39,4 +38,19 @@ class UserPostListView(LoginRequiredMixin, ListView):
         poster = Post.objects.filter(author__in = users).order_by('-date_posted')
         return poster
 
+
+def user_post(request):
+    users = User.objects.filter(username=request.user.username)
+    try:
+        profile = Profile_student.objects.get(user__in = users)
+    except:
+        profile = Profile_corporate.objects.get(user__in = users)
+    users = profile.authors_followed.all()
+    authors_followed_list_ids = [person.id for person in request.user.profile.authors_followed.all()]
+
+    recommended_users = Profile_student.objects.filter(rating__gte=request.user.profile.rating-300).exclude(id__in=authors_followed_list_ids)
+    context = {'user': request.user, 'posts': Post.objects.filter(author__in=users).order_by('-date_posted'), 'recommended_users': recommended_users}
+
+    print(authors_followed_list_ids, '*'*10)
+    return render(request, 'feed/feed.html', context)
 

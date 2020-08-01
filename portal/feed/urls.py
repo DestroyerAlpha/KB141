@@ -1,9 +1,9 @@
 from django.urls import path
 from .views import (
-    UserPostListView,
+    PostListView,
 )
 from . import views
 
 urlpatterns = [
-    path('', UserPostListView.as_view(), name="feed"),
+    path('', views.user_post, name="feed"),
 ]
