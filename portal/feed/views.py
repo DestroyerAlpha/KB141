@@ -55,27 +55,6 @@ def user_post(request):
     return render(request, 'feed/feed.html', context)
 
 
-class UserPostView(LoginRequiredMixin, ListView):
-    model = Post
-    template_name = 'users/user_feed.html'
-    context_object_name = 'posts'
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        try:
-            profile = Profile_student.objects.get(user = user)
-        except:
-            profile = Profile_corporate.objects.get(user = user)
-        return Post.objects.filter(author=profile).order_by('-date_posted')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(UserPostView, self).get_context_data(*args, **kwargs)
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        try:
-            profile = Profile_student.objects.get(user = user)
-        except:
-            profile = Profile_corporate.objects.get(user = user)
-        context['user_profile'] = profile
-        return context
 
 class PostDetailView(DetailView):
     model = Post
@@ -163,4 +142,17 @@ def PostLikeView(request, postid):
     return redirect('post-detail', post.id)
 
 
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.comment_post = post
+            comment.comment_author = request.user
+            comment.save()
+            return redirect('post-detail', pk=post.pk)
+    else:
+        form = CommentForm()
+    return render(request, 'feed/add_comment_to_post.html', {'form': form})
 
