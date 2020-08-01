@@ -3,12 +3,14 @@ body{
                 background: #33cc99;
                 color:#fff;
                 font-family: 'Open Sans', sans-serif;
+                max-height:700px;
                 overflow: hidden;
             }
             .c{
                 text-align: center;
                 display: block;
                 position: relative;
+                width:80%;
                 margin:100px auto;
             }
             ._404{
