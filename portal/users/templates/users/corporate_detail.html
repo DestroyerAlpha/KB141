@@ -1,0 +1,18 @@
+{% extends 'home/index.html' %}
+
+{% block content %}
+    
+    <form method='POST' action = "/corporate_detail/" enctype='multipart/form-data'>
+        <!-- for is rendered as list for styling  -->
+        <ul>
+		{% csrf_token %}
+		{% for field in form.visible_fields %}
+		<li class = "form_fields">{{ field.label_tag }}
+		{{ field }}</li>
+		{% endfor %}
+		</ul>
+        <!-- this form will direct user to website home. see view for more info -->
+		<button type = "submit">Save</button>
+	</form>
+
+{% endblock content %}

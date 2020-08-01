@@ -1,0 +1,99 @@
+{% extends 'home/index.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title mb-4">
+                        <div class="d-flex justify-content-start">
+                            <div class="image-container">
+                                <img src="{{user_profile.profile_picture.url}}"></img>
+                                {% comment %} Place to display Image {% endcomment %}
+                            </div>
+                            <div class="userData ml-3">
+                                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">{{ user_profile.user.first_name}}&nbsp&nbsp{{ user_profile.user.last_name}}</h2>
+                                <h6 class="d-block">User Rating: {{user_profile.rating}}</h6>
+                                {% comment %} <h6 class="d-block">Place for adding total papers</h6> {% endcomment %}
+                                <h6 class="d-block">
+                                    <form method='POST' enctype='multipart/form-data'>
+                                        <ul>
+                                		{% csrf_token %}
+                                		</ul>
+                                		<button type = "submit">Follow</button>
+                                	</form>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="basicInfo-tab" href="{% url 'user-profile' user_profile.user.username %}">Basic Info</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="feed-tab" href="{% url 'user-feed' user_profile.user.username %}">Feed</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content ml-1" id="myTabContent">
+                                <div class="tab-pane fade show active" id="basicInfo" role="tabpanel" aria-labelledby="basicInfo-tab">
+                                    <div class="row">
+                                    <div class="profile-feed">
+                                        {% for post in posts %}
+                                        <div class="d-flex align-items-start profile-feed-item">
+                                            <img src="{{ post.author.profile_picture.url }}" alt="profile" class="img-sm rounded-circle">
+                                            <div class="ml-4">
+                                            <h6>
+                                                <a href = "{% url 'user-profile' post.author %}">{{ post.author }}</a>
+                                                <small class="ml-4 text-muted"><i class="mdi mdi-clock mr-1"></i>{{ post.date_posted|date:"F d, Y" }}</small>
+                                            </h6>
+                                            <hr>
+                                            <p>
+                                                {{ post.content }}
+                                            </p>
+                                            <p>
+                                            {% if post.paper != None %}
+                                                <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                                            {% endif %}
+                                            </p>
+                                            <p class="small text-muted mt-2 mb-0">
+                                            <a href="{% url 'post-detail' post.id %}">
+                                                <span>
+                                                <i class="mdi mdi-star"></i>{{ post.post_like.all.count }}
+                                                </span>
+                                                <span class="ml-2">
+                                                <i class="mdi mdi-comment mr-1"></i>
+                                                    {{ post.comment_post_key.all.count }}
+                                                </span>
+                                                </a>
+                                                <a href="{% url 'save' post.id 1 %}">
+                                                {% if user in post.post_save.all %}
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M3 3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12l-5-3-5 3V3z"/>
+                                                </svg>
+                                                {% else %}
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M8 12l5 3V3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l5-3zm-4 1.234l4-2.4 4 2.4V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10.234z"/>
+                                                </svg>
+                                                {% endif %}
+                                                </a>
+                                            </p>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                            <p>Nothing to show here! Follow some people to see their updates! <p>
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
