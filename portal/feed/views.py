@@ -54,3 +54,70 @@ def user_post(request):
     print(authors_followed_list_ids, '*'*10)
     return render(request, 'feed/feed.html', context)
 
+
+class PostDetailView(DetailView):
+    model = Post
+
+
+class TextPostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['content']
+    def form_valid(self, form):
+        try:
+            profile = Profile_student.objects.get(user = self.request.user)
+        except:
+            profile = Profile_corporate.objects.get(user = self.request.user)
+        form.instance.author = profile
+        form.instance.paper = None
+        return super().form_valid(form)
+
+class CustomForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CustomForm, self).__init__(*args, **kwargs)
+        self.fields['content'].label = "Abstract"
+    class Meta:
+        model = Post
+        fields = ['content']
+
+class PaperPostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = CustomForm
+
+    def form_valid(self, form, *args, **kwargs):
+        paperid = self.kwargs['paperid']
+        papers = research_paper.objects.get(id = paperid)
+        form.instance.author = self.request.user.profile
+        form.instance.paper = papers
+        return super().form_valid(form)
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['content']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user.profile
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user.profile == post.author:
+            return True
+        elif self.request.user.corporate_profile == post.author:
+            return True
+        return False
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    success_url = '/feed/'
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user.profile == post.author:
+            return True
+        elif self.request.user.corporate_profile == post.author:
+            return True
+        return False
+
+
