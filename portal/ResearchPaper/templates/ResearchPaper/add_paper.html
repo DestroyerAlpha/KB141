@@ -1,0 +1,33 @@
+{% extends 'home/index.html' %}
+
+{% block content %}
+    {% if message %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{message}}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- display nothing if not logged in -->
+    <!-- is allowed only if logged in person is researcher. Company people can't publish paper. -->
+    {% if user.is_authenticated and is_allowed %}
+    <center>
+        <form method='POST' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <!-- form fields are rendered as list items  -->
+            {% for field in form.visible_fields %}
+            <li style = "font-size:30px;color:#5161ce;padding:40px">{{ field.label_tag }}</li>
+            <li>{{ field }}</li>
+            {% endfor %}
+            <!-- view directs users to home page if form is valid on clicking below button -->
+    		<button type = "submit" style = "background-color:#5161ce;color:#fff;padding:10px;padding-left:40px;padding-right:40px;border-radius:8px;border:1px solid #fff">Save</button>
+    	</form>
+    </center>
+    {% else %}
+    <h1>{{ is_allowed }}</h1>
+    <h2>{{ form }}</h2>
+    {% endif %}
+
+{% endblock content %}
