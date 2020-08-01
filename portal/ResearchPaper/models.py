@@ -28,7 +28,13 @@ class research_paper(models.Model):
     authors = models.ManyToManyField(Profile_student, related_name="%(app_label)s_%(class)s_related", related_query_name="%(app_label)s_%(class)ss",)
     liked_by = models.ManyToManyField(Profile_student)
     tags = models.ManyToManyField(paper_tag)
-    
+    def filename(self):
+        return os.path.basename(self.file.name)
+    def authorsname(self):
+        temp = []
+        for auth in self.authors.all():
+            temp.append(auth.user)
+        return temp
     def tagsname(self):
         temp = []
         for i in self.tags.all():
