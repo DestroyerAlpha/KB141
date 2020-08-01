@@ -1,0 +1,15 @@
+{% extends 'home/index.html' %}
+
+{% block content %}
+
+    <form method='POST' action = "/student_detail/" enctype='multipart/form-data'>
+        <ul>
+		{% csrf_token %}
+		{% for field in form.visible_fields %}
+		<li class = "form_fields">{{ field.label_tag }}
+		{{ field }}</li>
+		{% endfor %}
+		</ul>
+		<button type = "submit">Save</button>
+	</form>
+{% endblock content %}
