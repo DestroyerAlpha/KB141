@@ -1,0 +1,50 @@
+{% extends 'home/index.html' %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+    <div class = "container">
+        <div class = "row">
+            <div class = "col-lg-6" style = "min-height:500px;">
+                <div style = "margin:40px;border:2px solid #5161ce;height:100%;border-radius:9px">
+                </div>
+            </div>
+            <div class = "col-lg-6" style = "min-height:500px;">
+                <div style = "margin:40px;border:2px solid #5161ce;height:100%;border-radius:9px">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class = "container" style = "padding-top:100px;">
+        <div class = "row">
+            <div class="col-lg-6 card-container">
+              <div class="card card--dark"><a href = "{% url 'student_register' %}">
+                  <div class="card--display"><i class="material-icons">supervised_user_circle</i>
+                    <h2>For Researchers and Students</h2>
+                  </div>
+                  <div class="card--hover">
+                    <h2>For Researchers and Students</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at est orci. Nam molestie pellentesque mi nec lacinia. Cras volutpat arcu sit amet elit sodales, nec volutpat velit bibendum.</p>
+                    <p class="link">Go</p>
+                  </div></a>
+                <div class="card--border"></div>
+              </div>
+            </div>
+            <div class="col-lg-6 card-container">
+              <div class="card card--dark"><a href = "{% url 'corporate_register' %}">
+                  <div class="card--display"><i class="material-icons">supervisor_account</i>
+                    <h2>For Companies</h2>
+                  </div>
+                  <div class="card--hover">
+                    <h2>For Companies</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at est orci. Nam molestie pellentesque mi nec lacinia. Cras volutpat arcu sit amet elit sodales, nec volutpat velit bibendum.</p>
+                    <p class="link">Go</p>
+                  </div></a>
+                <div class="card--border"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}
