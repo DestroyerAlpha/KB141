@@ -52,3 +52,13 @@ class corporate_form(ModelForm):
             'profile_picture',
         ]
 
+#for follow button on profile
+class student_follow(ModelForm):
+    '''
+        form to collect more information about user if researcher
+    '''
+    class Meta:
+        model = Profile_student
+        fields = [
+            'authors_followed',
+        ]
