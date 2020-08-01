@@ -54,6 +54,10 @@ def user_post(request):
     print(authors_followed_list_ids, '*'*10)
     return render(request, 'feed/feed.html', context)
 
+class UserPostSaveView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'feed/bookmarks.html'
+    context_object_name = 'posts'
 
 
 class PostDetailView(DetailView):
@@ -156,3 +160,13 @@ def add_comment_to_post(request, pk):
         form = CommentForm()
     return render(request, 'feed/add_comment_to_post.html', {'form': form})
 
+def PostSaveView(request, postid, num):
+    post = Post.objects.get(id=postid)
+    if request.user in post.post_save.all():
+        post.post_save.remove(request.user)
+    else:
+        post.post_save.add(request.user)
+    if num == 1:
+        return redirect('feed')
+    else:
+        return redirect('bookmark')
