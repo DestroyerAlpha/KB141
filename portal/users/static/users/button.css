@@ -1,0 +1,19 @@
+input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #5161ce;
+    width: 400px;
+}
+.form_fields {
+    font-size:20px;
+    color:#5161ce;
+    padding:40px;
+}
+button {
+    background-color:#5161ce;
+    color:#fff;padding:10px;
+    padding-left:40px;
+    padding-right:40px;
+    border-radius:8px;
+    border:1px solid #fff;
+}
