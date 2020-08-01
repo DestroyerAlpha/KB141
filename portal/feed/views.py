@@ -55,6 +55,28 @@ def user_post(request):
     return render(request, 'feed/feed.html', context)
 
 
+class UserPostView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'users/user_feed.html'
+    context_object_name = 'posts'
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        try:
+            profile = Profile_student.objects.get(user = user)
+        except:
+            profile = Profile_corporate.objects.get(user = user)
+        return Post.objects.filter(author=profile).order_by('-date_posted')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserPostView, self).get_context_data(*args, **kwargs)
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        try:
+            profile = Profile_student.objects.get(user = user)
+        except:
+            profile = Profile_corporate.objects.get(user = user)
+        context['user_profile'] = profile
+        return context
+
 class PostDetailView(DetailView):
     model = Post
 
@@ -119,5 +141,26 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         elif self.request.user.corporate_profile == post.author:
             return True
         return False
+
+def PostLikeView(request, postid):
+    post = Post.objects.get(id=postid)
+    if request.user in post.post_like.all():
+        post.post_like.remove(request.user)
+        if post.paper != None:
+            try:
+                profile = Profile_student.objects.get(user = request.user)
+            except:
+                profile = Profile_corporate.objects.get(user = request.user)
+            post.paper.liked_by.remove(profile)
+    else:
+        post.post_like.add(request.user)
+        if post.paper != None:
+            try:
+                profile = Profile_student.objects.get(user = request.user)
+            except:
+                profile = Profile_corporate.objects.get(user = request.user)
+            post.paper.liked_by.add(profile)
+    return redirect('post-detail', post.id)
+
 
 
