@@ -28,6 +28,7 @@ class research_paper(models.Model):
     authors = models.ManyToManyField(Profile_student, related_name="%(app_label)s_%(class)s_related", related_query_name="%(app_label)s_%(class)ss",)
     liked_by = models.ManyToManyField(Profile_student)
     tags = models.ManyToManyField(paper_tag)
+    Private = models.BooleanField() 
     def filename(self):
         return os.path.basename(self.file.name)
     def authorsname(self):

@@ -8,5 +8,6 @@ class research_paper_form(ModelForm):
         fields = [
             'file',
             'authors',
-            'tags'
+            'tags',
+            'Private',
         ]
