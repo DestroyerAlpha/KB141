@@ -1,6 +1,7 @@
 import requests,webbrowser
 import concurrent.futures
 from bs4 import BeautifulSoup
+from django.http import JsonResponse
 from django.db.models import Q
 from django.shortcuts import render,HttpResponse
 from django.views import generic
@@ -29,6 +30,18 @@ def home(request):
 
 def rs_filter(request):
     
+	#autocomplete
+    if 'term' in request.GET:
+        in_tag = list()
+        qs = paper_tag.objects.filter(tag__contains=request.GET.get('term'))
+        for q in qs:
+            in_tag.append(q.tag)
+        # qs = research_paper.objects.filter(tags__tag__contains=request.GET.get('term'))
+        # for q in qs:
+        #     in_tag.append(q. + '-- paper')
+        return JsonResponse(in_tag,safe=False)
+
+	#search function
     papers = research_paper.objects.all().order_by('-created_on')
     postpapers = []
     postpapersbyauth = []
