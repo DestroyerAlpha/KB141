@@ -59,7 +59,14 @@ def rs_filter(request):
 
             #for paper filter
             papersbyauth = research_paper.objects.filter(authors__user__username__contains=name).order_by('-created_on')
-            papersbytag = research_paper.objects.filter(tags__tag__contains=name).distinct().order_by('-created_on')
+            tags = name.split(' ')
+            papersbytag = research_paper.objects.filter(tags__tag__contains=tags[0])
+            for tag in tags:
+                if tag != tags[0]:
+                    papersbytag = papersbytag.filter(tags__tag__contains=tag)
+
+            papersbytag = papersbytag.distinct().order_by('-created_on')
+                
 
             posts = Post.objects.filter( Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
 
