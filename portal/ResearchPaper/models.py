@@ -23,12 +23,12 @@ class research_paper(models.Model):
     '''
 
     # all files are stored in papers directory
-    file = models.FileField(upload_to = "media/papers/")
+    file = models.FileField(upload_to = "papers/")
     created_on = models.DateField(default=datetime.date.today)
     authors = models.ManyToManyField(Profile_student, related_name="%(app_label)s_%(class)s_related", related_query_name="%(app_label)s_%(class)ss",)
     liked_by = models.ManyToManyField(Profile_student)
     tags = models.ManyToManyField(paper_tag)
-    Private = models.BooleanField() 
+    Private = models.BooleanField()
     def filename(self):
         return os.path.basename(self.file.name)
     def authorsname(self):

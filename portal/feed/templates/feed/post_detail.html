@@ -51,7 +51,7 @@
         <p>
           {% if post.paper != None %}
 
-            <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+            <a href="{% url 'website-home' %}/media/{{ post.paper.file }}">Click here for the full paper</a>
           {% endif %}
         </p>
         <p class="small text-muted mt-2 mb-0">
