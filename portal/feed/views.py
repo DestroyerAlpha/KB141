@@ -112,6 +112,8 @@ class PaperPostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form, *args, **kwargs):
         paperid = self.kwargs['paperid']
         papers = research_paper.objects.get(id = paperid)
+        if papers.Private == 1:
+            papers = research_paper.objects.get(id = 10)
         form.instance.author = self.request.user.profile
         form.instance.paper = papers
         return super().form_valid(form)
@@ -150,7 +152,7 @@ def PostLikeView(request, postid):
     post = Post.objects.get(id=postid)
     if request.user in post.post_like.all():
         post.post_like.remove(request.user)
-        
+
         # update rating of author
         if post.paper != None:
             try:
@@ -165,7 +167,7 @@ def PostLikeView(request, postid):
         post.post_like.add(request.user)
 
         # update rating of author
-        
+
         if post.paper != None:
             try:
                 profile = Profile_student.objects.get(user = request.user)
