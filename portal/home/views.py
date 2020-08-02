@@ -61,6 +61,9 @@ def rs_filter(request):
 
             posts = Post.objects.filter( Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
 
+	
+	#google scraper
+	gscraper(name)
     for p in papers:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -94,3 +97,26 @@ def rs_filter(request):
         'cuserbyinsti' : cuserbyinsti,
     }
     return render(request, 'home/rs_filter.html', rtn)
+
+def gscraper(name):
+    global gsearch
+    google_search = requests.get("https://scholar.google.com/scholar?q=" + name)
+    soup = BeautifulSoup(google_search.text,'html.parser')
+    gtitle = []
+    glink = []
+    gtext = []
+    gcites = []
+    
+    searchresults = soup.select('.gs_rt a')
+    for result in searchresults:
+        gtitle.append(''.join(result.findAll(text=True)))
+        glink.append(result.get('href'))
+    
+    searchresults = soup.select('.gs_rs')
+    for result in searchresults:
+        gtext.append(''.join(result.findAll(text=True)))
+    
+    searchresults = soup.select('.gs_fl a:nth-of-type(3)')
+    for results in searchresults:
+        gcites.append(results.text)
+    gsearch = zip(gtitle, glink, gtext, gcites)
