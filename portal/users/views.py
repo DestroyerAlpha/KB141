@@ -57,6 +57,7 @@ def user_profile(request, username):
             profile = Profile_corporate.objects.get(user__in = searched_user)
 
         try:
+            pass_follow = 1
             if request.method == 'POST':
                 form = student_follow(request.POST)
                 if form.is_valid():
@@ -71,10 +72,11 @@ def user_profile(request, username):
             else:
                 form = student_follow()
         except:
+            pass_follow = 0
             #this block is to handle when django loads this page first time - POST will fail and will throw error - so except :)
-            print("it's okkk. User came in first time.")
+            print("This is unfollow this time ... ")
 
-        context = {'form': form, 'current_user': requested_user, 'user_profile': profile, 'searched': requested_user}
+        context = {'form': form, 'current_user': requested_user, 'user_profile': profile, 'searched': requested_user, 'pass_follow': pass_follow}
         return render(request, 'users/profile.html', context)
     except ObjectDoesNotExist:
         requested_user = None
