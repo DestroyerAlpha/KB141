@@ -42,6 +42,8 @@ def rs_filter(request):
     cuserbyname = []
     cuserbyinsti = []
     posts = []
+    # gsearch = []
+    # rgsearch = []
     search = False
     if request.method == 'POST' :
         name = request.POST.get("search","")
@@ -57,15 +59,22 @@ def rs_filter(request):
 
             #for paper filter
             papersbyauth = research_paper.objects.filter(authors__user__username__contains=name).order_by('-created_on')
-            papersbytag = research_paper.objects.filter(tags__tag__contains=name).distinct().order_by('-created_on')
+            tags = name.split(' ')
+            papersbytag = research_paper.objects.filter(tags__tag__contains=tags[0])
+            for tag in tags:
+                if tag != tags[0]:
+                    papersbytag = papersbytag.filter(tags__tag__contains=tag)
+
+            papersbytag = papersbytag.distinct().order_by('-created_on')
+                
 
             posts = Post.objects.filter( Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
 
-	
-	#google scraper
-	gscraper(name)
-	#rsscraper
-	rgscraper(name)
+            #running both the scraping parallely
+            with concurrent.futures.ThreadPoolExecutor() as executor : 
+                to_do = [executor.submit(gscraper,name),
+                         executor.submit(rgscraper,name)]
+
     for p in papers:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -97,8 +106,14 @@ def rs_filter(request):
         'cusers' : cusers,
         'cuserbyname' : cuserbyname,
         'cuserbyinsti' : cuserbyinsti,
+        'gsearch' : gsearch,
+        'rgsearch' : rgsearch,
     }
     return render(request, 'home/rs_filter.html', rtn)
+
+#using global variables 
+gsearch = []
+rgsearch = []
 
 def gscraper(name):
     global gsearch
@@ -127,34 +142,24 @@ def rgscraper(name):
     global rgsearch
     rg_search = requests.get("https://www.researchgate.net/search/publication?q=" + name)
     soup = BeautifulSoup(rg_search.text,'html.parser')
-    print('\n\n\n\n\n\n in rg scaper')
     file1 = open('output.html','w')
-    print(soup.prettify(),file=file1)
+    print(soup.prettify(),file = file1)
     file1.close()
-    
-    
-    searchresults = soup.select('.nova-v-publication-item__body .nova-e-link.nova-e-link--color-inherit.nova-e-link--theme-bare')
-    dateresults = soup.select('.nova-v-publication-item__body .nova-v-publication-item__meta-right li:nth-of-type(1)')
-    authorsresultsp = soup.select('.nova-v-publication-item__body') #ul.nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
-    authorsresults = authorsresultsp.find(' .nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
+    searchresults = soup.select('.nova-e-link.nova-e-link--color-inherit.nova-e-link--theme-bare')
+    dateresult = soup.select('.nova-v-publication-item__meta-right li:nth-of-type(1)')
+    authorsresults = soup.select('ul.nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
+    typeresults = soup.select('.nova-v-publication-item__meta-left')
     rgtitle = []
     rglink = []
     rgdate = []
     rgauthors = []
-    for result,date,authors in zip(searchresults,dateresults,authorsresults):
-        if(''.join(result.findAll(text=True)) == ''):
-            print('no')
+    rgtype = []
+    for link,date,authors,ty in zip(searchresults,dateresult,authorsresults,typeresults):
+        if(''.join(link.findAll(text=True)) == ''):
             break
-        print('yo')
-        rgtitle.append(''.join(result.findAll(text=True)))
-        rglink.append('https://www.researchgate.net/' + result.get('href'))
+        rgauthors.append(', '.join(authors.findAll(text=True)))
         rgdate.append(date.text)
-        # try :
-        #     temp = authors.find('ul.nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
-        # except :
-        #     temp = None
-        # if not temp:
-        #     rgauthors.append('')
-        # else:
-        #     rgauthors.append(temp)
-    rgsearch = zip(rgtitle, rglink, rgdate, rgauthors)
+        rgtitle.append(''.join(link.findAll(text=True)))
+        rglink.append('https://www.researchgate.net/' + link.get('href'))
+        rgtype.append(ty.text)
+    rgsearch = zip(rgtitle,rglink,rgdate,rgauthors,rgtype)
