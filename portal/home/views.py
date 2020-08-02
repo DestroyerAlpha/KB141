@@ -64,6 +64,8 @@ def rs_filter(request):
 	
 	#google scraper
 	gscraper(name)
+	#rsscraper
+	rgscraper(name)
     for p in papers:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -120,3 +122,39 @@ def gscraper(name):
     for results in searchresults:
         gcites.append(results.text)
     gsearch = zip(gtitle, glink, gtext, gcites)
+
+def rgscraper(name):
+    global rgsearch
+    rg_search = requests.get("https://www.researchgate.net/search/publication?q=" + name)
+    soup = BeautifulSoup(rg_search.text,'html.parser')
+    print('\n\n\n\n\n\n in rg scaper')
+    file1 = open('output.html','w')
+    print(soup.prettify(),file=file1)
+    file1.close()
+    
+    
+    searchresults = soup.select('.nova-v-publication-item__body .nova-e-link.nova-e-link--color-inherit.nova-e-link--theme-bare')
+    dateresults = soup.select('.nova-v-publication-item__body .nova-v-publication-item__meta-right li:nth-of-type(1)')
+    authorsresultsp = soup.select('.nova-v-publication-item__body') #ul.nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
+    authorsresults = authorsresultsp.find(' .nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
+    rgtitle = []
+    rglink = []
+    rgdate = []
+    rgauthors = []
+    for result,date,authors in zip(searchresults,dateresults,authorsresults):
+        if(''.join(result.findAll(text=True)) == ''):
+            print('no')
+            break
+        print('yo')
+        rgtitle.append(''.join(result.findAll(text=True)))
+        rglink.append('https://www.researchgate.net/' + result.get('href'))
+        rgdate.append(date.text)
+        # try :
+        #     temp = authors.find('ul.nova-e-list.nova-e-list--size-m.nova-e-list--type-inline.nova-e-list--spacing-none.nova-v-publication-item__person-list')
+        # except :
+        #     temp = None
+        # if not temp:
+        #     rgauthors.append('')
+        # else:
+        #     rgauthors.append(temp)
+    rgsearch = zip(rgtitle, rglink, rgdate, rgauthors)
