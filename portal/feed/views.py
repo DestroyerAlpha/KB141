@@ -152,23 +152,19 @@ def PostLikeView(request, postid):
         post.post_like.remove(request.user)
         
         # update rating of author
-        for author in post.paper.authors.all():
-            author.rating -= 100
-            author.save()
-
         if post.paper != None:
             try:
                 profile = Profile_student.objects.get(user = request.user)
             except:
                 profile = Profile_corporate.objects.get(user = request.user)
             post.paper.liked_by.remove(profile)
+            for author in post.paper.authors.all():
+                author.rating -= 100
+            author.save()
     else:
         post.post_like.add(request.user)
 
         # update rating of author
-        for author in post.paper.authors.all():
-            author.rating += 100
-            author.save()
         
         if post.paper != None:
             try:
@@ -176,6 +172,9 @@ def PostLikeView(request, postid):
             except:
                 profile = Profile_corporate.objects.get(user = request.user)
             post.paper.liked_by.add(profile)
+            for author in post.paper.authors.all():
+                author.rating += 100
+            author.save()
     return redirect('post-detail', post.id)
 
 def CommentLikeView(request, commentid, postid):
