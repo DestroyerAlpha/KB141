@@ -77,11 +77,12 @@
 
 
         <!-- here display all the serach results  -->
-    <h3> Showing results for {{ name }}</h3>
+    <h4> Showing results for "{{ name }}"</h4>
     <div class="block" style=" padding-right: 20%; padding-left: 20px; padding-top : 20px">
         <ul class="nav nav-tabs">
             <li class="active"><a class="nav-link active" data-toggle="pill" href="#papers">Paper</a></li>
             <li><a class="nav-link" data-toggle="pill" href="#users">Users</a></li>
+            <li><a class="nav-link" data-toggle="pill" href="#posts">Posts</a></li>
         </ul>
         <div class="tab-content" style="padding-top: 20px;">
             <div id="papers" class="tab-pane fade show active" role="tabpanel">
@@ -249,6 +250,53 @@
                     </div>
                 </div>
             </div>
+            <div id="posts" class="tab-pane fade" role="tabpanel">
+                {% for post in posts %}
+                    <div class="d-flex align-items-start profile-feed-item">
+                        <img src="{{ post.author.profile_picture.url }}" alt="profile" class="img-sm rounded-circle">
+                        <div class="ml-4">
+                        <h6>
+                            <a href = "{% url 'user-profile' post.author %}">{{ post.author }}</a>
+                            <small class="ml-4 text-muted"><i class="mdi mdi-clock mr-1"></i>{{ post.date_posted|date:"F d, Y" }}</small>
+                        </h6>
+                        <hr>
+                        <p>
+                            {{ post.content }}
+                        </p>
+                        <p>
+                          {% if post.paper != None %}
+                            <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                          {% endif %}
+                        </p>
+                        <p class="small text-muted mt-2 mb-0">
+                        <a href="{% url 'post-detail' post.id %}">
+                            <span>
+                            <i class="mdi mdi-star"></i>{{ post.post_like.all.count }}
+                            </span>
+                            <span class="ml-2">
+                            <i class="mdi mdi-comment mr-1"></i>
+                                {{ post.comment_post_key.all.count }}
+                            </span>
+                            </a>
+                            <a href="{% url 'save' post.id 1 %}">
+                            {% if user in post.post_save.all %}
+                              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M3 3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12l-5-3-5 3V3z"/>
+                            </svg>
+                            {% else %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 12l5 3V3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l5-3zm-4 1.234l4-2.4 4 2.4V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10.234z"/>
+                            </svg>
+                            {% endif %}
+                            </a>
+                        </p>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p>Nothing matched your search <p>
+                {% endfor %}
+            </div>
+            
         </div>
         {% endif %}
     </div>
