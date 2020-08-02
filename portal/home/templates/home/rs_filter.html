@@ -1,0 +1,306 @@
+{% extends 'home/index.html' %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+{% block content %}
+    <h3>{{ special }}</h3>
+    {% if search == False %}
+    <!-- Search is false means that the search feild was null so diaplay all the papers and users -->
+    <div class="block" style=" padding-right: 20%; padding-left: 20px; padding-top : 20px">
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="nav-link active" data-toggle="pill" href="#papers">Paper</a></li>
+            <li><a class="nav-link" data-toggle="pill" href="#users">Users</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 20px;">
+            <div id="papers" class="tab-pane fade show active" role="tabpanel">
+                <div class="list-group">
+                    {% for postpaper,paper in papers %}
+                        <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                        <small>{{ paper.created_on }}</small>
+                        </div>
+                        <p class="mb-1">Authors : 
+                            {% for auth in paper.authorsname %}
+                                {{ auth }}
+                                ,
+                            {% endfor %}
+                        </p>
+                        <p class="mb-1">Tags : 
+                            {% for tag in paper.tagsname %}
+                                {{ tag }}
+                                ,
+                            {% endfor %}
+                        </p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="users" class="tab-pane fade" role="tabpanel">
+                <div class="list-group">
+                    {% for user in users %}
+                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ user.user }}</h5>
+                        <small>{{ user.rating }}</small>
+                        </div>
+                        <p style="font-size: x-small;" class="mb-1">
+                            {{ user.user.first_name }} {{ user.user.last_name }} | Student
+                            <br>
+                            {{ user.email }}
+                            <br>
+                            {{ user.institute }}
+                        </p>
+                        </a>
+                    {% endfor %}
+                    {% for user in cusers %}
+                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ user.user }}</h5>
+                        <small>{{ user.rating }}</small>
+                        </div>
+                        <p style="font-size: x-small;" class="mb-1">
+                            {{ user.user.first_name }} {{ user.user.last_name }} | Student
+                            <br>
+                            {{ user.email }}
+                            <br>
+                            {{ user.institute }}
+                        </p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+
+        
+    {% else %}
+
+
+
+        <!-- here display all the serach results  -->
+    <h4> Showing results for "{{ name }}"</h4>
+    <div class="block" style=" padding-right: 20%; padding-left: 20px; padding-top : 20px">
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="nav-link active" data-toggle="pill" href="#papers">Paper</a></li>
+            <li><a class="nav-link" data-toggle="pill" href="#users">Users</a></li>
+            <li><a class="nav-link" data-toggle="pill" href="#posts">Posts</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 20px;">
+            <div id="papers" class="tab-pane fade show active" role="tabpanel">
+                <div class="accordion" id="papersacc">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              Papers by author
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#papersacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for postpaper,paper in papersbyauth %}
+                                        <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                                        <small>{{ paper.created_on }}</small>
+                                        </div>
+                                        <p class="mb-1">Authors : 
+                                            {% for auth in paper.authorsname %}
+                                                {{ auth }}
+                                                ,
+                                            {% endfor %}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              Papers by tag
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#papersacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for postpaper,paper in papersbytag %}
+                                        <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                                        <small>{{ paper.created_on }}</small>
+                                        </div>
+                                        <p class="mb-1">Authors : 
+                                            {% for auth in paper.authorsname %}
+                                                {{ auth }}
+                                                ,
+                                            {% endfor %}
+                                        </p>
+                                        <p class="mb-1">Tags : 
+                                            {% for tag in paper.tagsname %}
+                                                {{ tag }}
+                                                ,
+                                            {% endfor %}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <!-- USers panel -->
+        
+            <div id="users" class="tab-pane fade" role="tabpanel">
+                <div class="accordion" id="usersacc">
+                    <div class="card">
+                        <div class="card-header" id="headingOnex">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOnex" aria-expanded="true" aria-controls="collapseOnex">
+                              Users by name
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseOnex" class="collapse" aria-labelledby="headingOnex" data-parent="#usersacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for user in userbyname %}
+                                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ user.user }}</h5>
+                                        <small>{{ user.rating }}</small>
+                                        </div>
+                                        <p style="font-size: x-small;" class="mb-1">
+                                            {{ user.user.first_name }} {{ user.user.last_name }} | Student
+                                            <br>
+                                            {{ user.email }}
+                                            <br>
+                                            {{ user.institute }}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                    {% for user in cuserbyname %}
+                                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ user.user }}</h5>
+                                        <small>{{ user.rating }}</small>
+                                        </div>
+                                        <p style="font-size: x-small;" class="mb-1">
+                                            {{ user.user.first_name }} {{ user.user.last_name }} | Student
+                                            <br>
+                                            {{ user.email }}
+                                            <br>
+                                            {{ user.institute }}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwox">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwox" aria-expanded="false" aria-controls="collapseTwox">
+                              Users by Institution
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseTwox" class="collapse" aria-labelledby="headingTwox" data-parent="#usersacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for user in userbycollege %}
+                                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ user.user }} </h5>
+                                        <small>{{ user.rating }}</small>
+                                        </div>
+                                        <p style="font-size: x-small;" class="mb-1">
+                                            {{ user.user.first_name }} {{ user.user.last_name }} | Student
+                                            <br>
+                                            {{ user.email }}
+                                            <br>
+                                            {{ user.institution }}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                    {% for user in cuserbyinsti %}
+                                        <a href="/profile/{{ user.user }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ user.user }} </h5>
+                                        <small>{{ user.rating }}</small>
+                                        </div>
+                                        <p style="font-size: x-small;" class="mb-1">
+                                            {{ user.user.first_name }} {{ user.user.last_name }} | Corporate
+                                            <br>
+                                            {{ user.email }}
+                                            <br>
+                                            {{ user.institution }}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="posts" class="tab-pane fade" role="tabpanel">
+                {% for post in posts %}
+                    <div class="d-flex align-items-start profile-feed-item">
+                        <img src="{{ post.author.profile_picture.url }}" alt="profile" class="img-sm rounded-circle">
+                        <div class="ml-4">
+                        <h6>
+                            <a href = "{% url 'user-profile' post.author %}">{{ post.author }}</a>
+                            <small class="ml-4 text-muted"><i class="mdi mdi-clock mr-1"></i>{{ post.date_posted|date:"F d, Y" }}</small>
+                        </h6>
+                        <hr>
+                        <p>
+                            {{ post.content }}
+                        </p>
+                        <p>
+                          {% if post.paper != None %}
+                            <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                          {% endif %}
+                        </p>
+                        <p class="small text-muted mt-2 mb-0">
+                        <a href="{% url 'post-detail' post.id %}">
+                            <span>
+                            <i class="mdi mdi-star"></i>{{ post.post_like.all.count }}
+                            </span>
+                            <span class="ml-2">
+                            <i class="mdi mdi-comment mr-1"></i>
+                                {{ post.comment_post_key.all.count }}
+                            </span>
+                            </a>
+                            <a href="{% url 'save' post.id 1 %}">
+                            {% if user in post.post_save.all %}
+                              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M3 3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12l-5-3-5 3V3z"/>
+                            </svg>
+                            {% else %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bookmark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 12l5 3V3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l5-3zm-4 1.234l4-2.4 4 2.4V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10.234z"/>
+                            </svg>
+                            {% endif %}
+                            </a>
+                        </p>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p>Nothing matched your search <p>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% endif %}
+    </div>
+    
+{% endblock content %}
+
+
