@@ -35,19 +35,21 @@ def rs_filter(request):
         in_tag = list()
         qs = paper_tag.objects.filter(tag__contains=request.GET.get('term'))
         for q in qs:
-            in_tag.append(q.tag)
-        # qs = research_paper.objects.filter(tags__tag__contains=request.GET.get('term'))
-        # for q in qs:
-        #     in_tag.append(q. + '-- paper')
+            in_tag.append(q.tag + ' -- tag')
+        qs = research_paper.objects.filter(title__contains=request.GET.get('term'))
+        for q in qs:
+            in_tag.append(q.title + ' -- paper')
         return JsonResponse(in_tag,safe=False)
 
 	#search function
     papers = research_paper.objects.all().order_by('-created_on')
     postpapers = []
+    postpapersbytitle = []
     postpapersbyauth = []
     postpapersbytag = []
     users = Profile_student.objects.all().order_by('-rating')
     cusers = Profile_corporate.objects.all().order_by('-rating')
+    papersbytitle = []
     papersbyauth = []
     papersbytag = []
     userbyname = []
@@ -71,6 +73,7 @@ def rs_filter(request):
             cuserbyinsti = Profile_corporate.objects.filter(institution__contains = name)
 
             #for paper filter
+            papersbytitle = research_paper.objects.filter(title__contains=name).order_by('-created_on')
             papersbyauth = research_paper.objects.filter(authors__user__username__contains=name).order_by('-created_on')
             tags = name.split(' ')
             papersbytag = research_paper.objects.filter(tags__tag__contains=tags[0])
@@ -93,6 +96,11 @@ def rs_filter(request):
         for po in post:
             postpapers.append(po)
     
+    for p in papersbytitle:
+        post = Post.objects.filter(paper__id = p.id)
+        for po in post:
+            postpapersbytitle.append(po)
+
     for p in papersbyauth:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -104,6 +112,7 @@ def rs_filter(request):
             postpapersbytag.append(po)
 
     resultpapers = zip(postpapers,papers)
+    resultpapersbytitle = zip(postpapersbytitle,papersbytitle)
     resultpapersbyauth = zip(postpapersbyauth,papersbyauth)
     resultpapersbytag = zip(postpapersbytag,papersbytag)
     rtn = {
@@ -112,6 +121,7 @@ def rs_filter(request):
         'papers' : resultpapers,
         'users' : users,
         'posts' : posts,
+        'papersbytitle' : resultpapersbytitle,
         'papersbyauth' : resultpapersbyauth,
         'papersbytag' : resultpapersbytag,
         'userbyname' : userbyname,
