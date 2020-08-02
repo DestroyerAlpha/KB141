@@ -299,7 +299,28 @@
             </div>
             <div id="web" class="tab-pane fade" role="tabpanel">
                 <div class="accordion" id = "webacc">
-                    
+                    <div class="card">
+                        <div class="card-header" id="headingOney">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOney" aria-expanded="false" aria-controls="collapseOney">
+                            Research Gate
+                            </button>
+                        </h2>
+                        </div>
+                        <div id="collapseOney" class="collapse" aria-labelledby="headingOney" data-parent="#webacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for title,link,date,authors in rgsearch %}
+                                        <a href="{{ link }}" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start" >
+                                            {{ title }} 
+                                            
+                                        </a>
+                                    {% endfor %}
+                                    <a href="https://www.researchgate.net/search/publication?q={{ name }}" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start" style="color: blue;"  > View more..</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-header" id="headingTwoy">
                         <h2 class="mb-0">
@@ -314,12 +335,7 @@
                                     {% for title,link,text,cites in gsearch %}
                                         <a href="{{ link }}" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start" >
                                             {{ title }}
-                                            <p style="font-size: x-small;" class="mb-2">
-                                                {{cites}}
-                                            </p>
-                                            <p style="font-size: x-small;" class="mb-1">
-                                                {{ text }} <span style="color: blue;"> read more </span>
-                                            </p>
+                                            
                                         </a>
                                     {% endfor %}
                                     <a href="https://scholar.google.com/scholar?q={{ name }}"  target="_blank" class="list-group-item list-group-item-action flex-column align-items-start" style="color: blue;" >  View more..</a>
