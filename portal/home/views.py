@@ -47,12 +47,15 @@ def rs_filter(request):
         name = request.POST.get("search","")
         if name != "" :
             search = True
+            #for users(students) filter 
             userbyname = Profile_student.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
             userbycollege = Profile_student.objects.filter(institution__contains = name)
 
+            #for users(company)
             cuserbyname = Profile_corporate.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
             cuserbyinsti = Profile_corporate.objects.filter(institution__contains = name)
 
+            #for paper filter
             papersbyauth = research_paper.objects.filter(authors__user__username__contains=name).order_by('-created_on')
             papersbytag = research_paper.objects.filter(tags__tag__contains=name).distinct().order_by('-created_on')
 
