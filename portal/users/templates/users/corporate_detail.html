@@ -1,7 +1,7 @@
 {% extends 'home/index.html' %}
 
 {% block content %}
-    
+	<center>
     <form method='POST' action = "/corporate_detail/" enctype='multipart/form-data'>
         <!-- for is rendered as list for styling  -->
         <ul>
@@ -14,5 +14,5 @@
         <!-- this form will direct user to website home. see view for more info -->
 		<button type = "submit">Save</button>
 	</form>
-
+	</center>
 {% endblock content %}

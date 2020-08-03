@@ -5,7 +5,7 @@
     {% if user.is_authenticated %}
         Already Registered Dude!
 	{% else %}
-	<center><h1 style = "color:#5161ce;padding-top:40px;">New User? Register Here</h1></center>
+	<center><h1 style = "color:#5161ce;padding-top:40px;">New User? Register Here</h1>
 	<form method='POST'>
 		<ul>
 		{% csrf_token %}
@@ -14,7 +14,7 @@
 		{{ field }}</li>
 		{% endfor %}
 		</ul>
-		<button type = "submit"><a href="{% url 'corporate_detail' %}">Go</a></button>
+		<button type = "submit"><a style="color: white;" href="{% url 'corporate_detail' %}">Go</a></button>
 
 		{% if form.errors %}
             {% for field in form %}
@@ -31,6 +31,7 @@
 		{% endfor %}
         {% endif %}
 	</form>
+	</center>
 	{% endif %}
 
 {% endblock content %}
