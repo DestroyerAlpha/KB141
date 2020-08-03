@@ -10,6 +10,8 @@ Project by Team PatanjaliHax for the Problem Statement KB141 given by Government
 [Django](https://www.djangoproject.com/)
 [Bootstrap](https://getbootstrap.com)
 
+### PPT for presentation
+[here](https://docs.google.com/presentation/d/1rpo1KZ37wxTqblmKbn9mhnkT26JYccbN5ZRfAkgsz08/edit#slide=id.g8d57b33c54_2_14)
 
 <br> <br>
 
