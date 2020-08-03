@@ -76,7 +76,10 @@ class UserPostView(LoginRequiredMixin, ListView):
             profile = Profile_student.objects.get(user = user)
         except:
             profile = Profile_corporate.objects.get(user = user)
-        return Post.objects.filter(author=profile).order_by('-date_posted')
+        try:
+            return Post.objects.filter(author=profile).order_by('-date_posted')
+        except:
+            return None
 
     def get_context_data(self, *args, **kwargs):
         context = super(UserPostView, self).get_context_data(*args, **kwargs)
