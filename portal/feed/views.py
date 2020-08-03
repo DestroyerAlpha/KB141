@@ -41,25 +41,28 @@ class UserPostListView(LoginRequiredMixin, ListView):
 
 @login_required
 def user_post(request):
-    users = User.objects.filter(username=request.user.username)
     try:
-        profile = Profile_student.objects.get(user__in = users)
+        users = User.objects.filter(username=request.user.username)
+        try:
+            profile = Profile_student.objects.get(user__in = users)
+        except:
+            profile = Profile_corporate.objects.get(user__in = users)
+        users = profile.authors_followed.all()
+        try:
+            authors_followed_list_ids = [person.id for person in request.user.profile.authors_followed.all()]
+
+            recommended_users = Profile_student.objects.filter(rating__gte=request.user.profile.rating-300).exclude(id__in=authors_followed_list_ids)
+            posts = Post.objects.filter(author__in=users).order_by('-date_posted')
+        except:
+            recommended_users = None
+            posts = None
+
+        context = {'user': request.user, 'posts': posts, 'recommended_users': recommended_users}
+
+        # print(authors_followed_list_ids, '*'*10)
+        return render(request, 'feed/feed.html', context)
     except:
-        profile = Profile_corporate.objects.get(user__in = users)
-    users = profile.authors_followed.all()
-    try:
-        authors_followed_list_ids = [person.id for person in request.user.profile.authors_followed.all()]
-
-        recommended_users = Profile_student.objects.filter(rating__gte=request.user.profile.rating-300).exclude(id__in=authors_followed_list_ids)
-        posts = Post.objects.filter(author__in=users).order_by('-date_posted')
-    except:
-        recommended_users = None
-        posts = None
-
-    context = {'user': request.user, 'posts': posts, 'recommended_users': recommended_users}
-
-    # print(authors_followed_list_ids, '*'*10)
-    return render(request, 'feed/feed.html', context)
+        return render(request, 'home/xyzabc.html')
 
 class UserPostSaveView(LoginRequiredMixin, ListView):
     model = Post
