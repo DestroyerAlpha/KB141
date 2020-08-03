@@ -48,9 +48,13 @@
         <p>
             {{ object.content }}
         </p>
-        <p>
           {% if post.paper != None %}
-
+          <p> Authors:
+            {% for authors in post.paper.authors.all %}
+              <a href="{% url 'user-profile' authors %}">{{ authors }}</a>;
+            {% endfor %}
+          </p>
+          <p>
             <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
           {% endif %}
         </p>

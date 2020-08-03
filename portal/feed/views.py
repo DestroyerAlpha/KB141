@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.forms import ModelForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -38,7 +39,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
         poster = Post.objects.filter(author__in = users).order_by('-date_posted')
         return poster
 
-
+@login_required
 def user_post(request):
     users = User.objects.filter(username=request.user.username)
     try:
@@ -160,7 +161,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.remove(profile)
             for author in post.paper.authors.all():
                 author.rating -= 100
-            author.save()
+                author.save()
     else:
         post.post_like.add(request.user)
 
@@ -174,7 +175,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.add(profile)
             for author in post.paper.authors.all():
                 author.rating += 100
-            author.save()
+                author.save()
     return redirect('post-detail', post.id)
 
 def CommentLikeView(request, commentid, postid):
