@@ -10,6 +10,7 @@ Project by Team PatanjaliHax for the Problem Statement KB141 given by Government
 [Django](https://www.djangoproject.com/)
 [Bootstrap](https://getbootstrap.com)
 
+
 ![Presentation](https://docs.google.com/presentation/d/1rpo1KZ37wxTqblmKbn9mhnkT26JYccbN5ZRfAkgsz08/edit?usp=sharing)
 
 ### Installation Guide
@@ -39,5 +40,7 @@ Create an user and add tags into appropriate tables.
 Add the restricted.pdf in research paper table and add the id of the restricted.pdf feed/views.py PaperPostCreateView class.  
 
 
+
 ![profile](https://user-images.githubusercontent.com/46635452/89172684-a3559500-d5a0-11ea-940c-c3b63cf63f6e.png)
 
+![profile](https://user-images.githubusercontent.com/46635452/89173672-44911b00-d5a2-11ea-8d68-da85497d8b53.png)
