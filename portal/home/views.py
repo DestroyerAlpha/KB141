@@ -37,10 +37,8 @@ def rs_filter(request):
         label = ''
         value = ''
         keyword = request.GET.get('term')
-        print(keyword)
         keys = keyword.split(' ')
         key = keys.pop()
-        print(key)
         typed = ' '.join(keys)
         if not key.isspace() and key != '':
             qs = paper_tag.objects.filter(tag__icontains=key).distinct()
