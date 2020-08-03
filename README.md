@@ -1,4 +1,4 @@
-![Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)
+[![Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](https://github.com/DestroyerAlpha/NC_CMRCET_KB141_PatanjaliHax/graphs/contributors)
 
 
 # About the Project
