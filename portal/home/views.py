@@ -32,14 +32,32 @@ def rs_filter(request):
     
 	#autocomplete
     if 'term' in request.GET:
-        in_tag = list()
-        qs = paper_tag.objects.filter(tag__contains=request.GET.get('term'))
+        print('\n\n')
+        rtn = list()
+        label = ''
+        value = ''
+        keyword = request.GET.get('term')
+        print(keyword)
+        keys = keyword.split(' ')
+        key = keys.pop()
+        print(key)
+        typed = ' '.join(keys)
+        if not key.isspace() and key != '':
+            qs = paper_tag.objects.filter(tag__contains=key).distinct()
+            for q in qs:
+                if typed == '':
+                    label = q.tag + ' -- tag'               
+                else:
+                    label = typed + ' | ' + q.tag + ' -- tags'
+                value = typed + ' ' + q.tag
+                rtn.append({'label':label,'value':value})
+        
+        qs = research_paper.objects.filter(title__contains=keyword).distinct()
         for q in qs:
-            in_tag.append(q.tag + ' -- tag')
-        qs = research_paper.objects.filter(title__contains=request.GET.get('term'))
-        for q in qs:
-            in_tag.append(q.title + ' -- paper')
-        return JsonResponse(in_tag,safe=False)
+            label = q.title + ' -- paper'
+            value = q.title
+            rtn.append({'label':label,'value':value})
+        return JsonResponse(rtn,safe=False)
 
 	#search function
     papers = research_paper.objects.all().order_by('-created_on')
@@ -84,7 +102,7 @@ def rs_filter(request):
             papersbytag = papersbytag.distinct().order_by('-created_on')
                 
 
-            posts = Post.objects.filter( Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
+            posts = Post.objects.filter( Q(paper__title__contains=name) | Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
 
             #running both the scraping parallely
             with concurrent.futures.ThreadPoolExecutor() as executor : 
