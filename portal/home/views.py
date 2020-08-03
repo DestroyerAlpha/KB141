@@ -78,27 +78,28 @@ def rs_filter(request):
         if name != "" :
             name = name.lstrip()
             search = True
+
             #for users(students) filter
-            userbyname = Profile_student.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
-            userbycollege = Profile_student.objects.filter(institution__contains = name)
+            userbyname = Profile_student.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
+            userbycollege = Profile_student.objects.filter(institution__icontains = name)
 
             #for users(company)
             cuserbyname = Profile_corporate.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
             cuserbyinsti = Profile_corporate.objects.filter(institution__icontains = name)
 
             #for paper filter
-            papersbytitle = research_paper.objects.filter(title__icontains=name).order_by('-created_on')
-            papersbyauth = research_paper.objects.filter(authors__user__username__icontains=name).order_by('-created_on')
+            papersbytitle = research_paper.objects.filter( Q(title__icontains=name) & Q(private = False)).order_by('-created_on')
+            papersbyauth = research_paper.objects.filter( Q(authors__user__username__icontains=name) & Q(private=False)).order_by('-created_on')
             tags = name.split(' ')
-            papersbytag = research_paper.objects.filter(tags__tag__iexact=tags[0])
+            papersbytag = research_paper.objects.filter( Q(tags__tag__iexact=tags[0]) & Q(private=False))
             for tag in tags:
                 if tag != tags[0]:
-                    papersbytag = papersbytag.filter(tags__tag__iexact=tag)
+                    papersbytag = papersbytag.filter( Q(tags__tag__iexact=tag) & Q(private=False))
 
             papersbytag = papersbytag.distinct().order_by('-created_on')
 
 
-            posts = Post.objects.filter( Q(paper__title__icontains=name) | Q(paper__authors__user__username__icontains=name) |  Q(content__icontains=name) | Q(author__user__username__icontains=name) | Q(author__user__first_name__icontains=name) | Q(author__user__last_name__icontains=name)).order_by('-date_posted')
+            posts = Post.objects.filter( (Q(paper__title__icontains=name) | Q(paper__authors__user__username__icontains=name) |  Q(content__icontains=name) | Q(author__user__username__icontains=name) | Q(author__user__first_name__icontains=name) | Q(author__user__last_name__icontains=name)) & (Q(private=False))).order_by('-date_posted')
 
             #running both the scraping parallely
             with concurrent.futures.ThreadPoolExecutor() as executor :
