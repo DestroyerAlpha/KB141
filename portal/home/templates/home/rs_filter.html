@@ -15,7 +15,7 @@
                     {% for postpaper,paper in papers %}
                         <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                        <h5 class="mb-1">{{ paper.title }}</h5>
                         <small>{{ paper.created_on }}</small>
                         </div>
                         <p class="mb-1">Authors : 
@@ -89,6 +89,35 @@
             <div id="papers" class="tab-pane fade show active" role="tabpanel">
                 <div class="accordion" id="papersacc">
                     <div class="card">
+                        <div class="card-header" id="headingThree">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                              Papers by Title
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#papersacc">
+                            <div class="card-body">
+                                <div class="list-group">
+                                    {% for postpaper,paper in papersbytitle %}
+                                        <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ paper.title }}</h5>
+                                        <small>{{ paper.created_on }}</small>
+                                        </div>
+                                        <p class="mb-1">Authors : 
+                                            {% for auth in paper.authorsname %}
+                                                {{ auth }}
+                                                ,
+                                            {% endfor %}
+                                        </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
                         <div class="card-header" id="headingOne">
                           <h2 class="mb-0">
                             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -102,7 +131,7 @@
                                     {% for postpaper,paper in papersbyauth %}
                                         <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
                                         <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                                        <h5 class="mb-1">{{ paper.title }}</h5>
                                         <small>{{ paper.created_on }}</small>
                                         </div>
                                         <p class="mb-1">Authors : 
@@ -131,7 +160,7 @@
                                     {% for postpaper,paper in papersbytag %}
                                         <a href="/feed/post/{{ postpaper.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
                                         <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">{{ paper.filename }}</h5>
+                                        <h5 class="mb-1">{{ paper.title }}</h5>
                                         <small>{{ paper.created_on }}</small>
                                         </div>
                                         <p class="mb-1">Authors : 
