@@ -91,6 +91,14 @@
                         source: "{% url 'rsfilter' %}"
                     });
                     } );
+                    $(document).ready(function () {
+                    $('body').keypress(function (e) {
+                        if (e.keyCode == 13) {
+                            e.preventDefault();
+                            $("#supersearch").click();
+                        }
+                    });
+                    });
                     </script>
 
 

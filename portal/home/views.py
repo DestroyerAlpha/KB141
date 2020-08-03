@@ -43,7 +43,7 @@ def rs_filter(request):
         print(key)
         typed = ' '.join(keys)
         if not key.isspace() and key != '':
-            qs = paper_tag.objects.filter(tag__contains=key).distinct()
+            qs = paper_tag.objects.filter(tag__icontains=key).distinct()
             for q in qs:
                 if typed == '':
                     label = q.tag + ' -- tag'               
@@ -52,7 +52,7 @@ def rs_filter(request):
                 value = typed + ' ' + q.tag
                 rtn.append({'label':label,'value':value})
         
-        qs = research_paper.objects.filter(title__contains=keyword).distinct()
+        qs = research_paper.objects.filter(title__icontains=keyword).distinct()
         for q in qs:
             label = q.title + ' -- paper'
             value = q.title
@@ -81,28 +81,29 @@ def rs_filter(request):
     if request.method == 'POST' :
         name = request.POST.get("search","")
         if name != "" :
+            name = name.lstrip()
             search = True
             #for users(students) filter 
-            userbyname = Profile_student.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
-            userbycollege = Profile_student.objects.filter(institution__contains = name)
+            userbyname = Profile_student.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
+            userbycollege = Profile_student.objects.filter(institution__icontains = name)
 
             #for users(company)
-            cuserbyname = Profile_corporate.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
-            cuserbyinsti = Profile_corporate.objects.filter(institution__contains = name)
+            cuserbyname = Profile_corporate.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
+            cuserbyinsti = Profile_corporate.objects.filter(institution__icontains = name)
 
             #for paper filter
-            papersbytitle = research_paper.objects.filter(title__contains=name).order_by('-created_on')
-            papersbyauth = research_paper.objects.filter(authors__user__username__contains=name).order_by('-created_on')
+            papersbytitle = research_paper.objects.filter(title__icontains=name).order_by('-created_on')
+            papersbyauth = research_paper.objects.filter(authors__user__username__icontains=name).order_by('-created_on')
             tags = name.split(' ')
-            papersbytag = research_paper.objects.filter(tags__tag__contains=tags[0])
+            papersbytag = research_paper.objects.filter(tags__tag__iexact=tags[0])
             for tag in tags:
                 if tag != tags[0]:
-                    papersbytag = papersbytag.filter(tags__tag__contains=tag)
+                    papersbytag = papersbytag.filter(tags__tag__iexact=tag)
 
             papersbytag = papersbytag.distinct().order_by('-created_on')
                 
 
-            posts = Post.objects.filter( Q(paper__title__contains=name) | Q(paper__authors__user__username__contains=name) |  Q(content__contains=name) | Q(author__user__username__contains=name) | Q(author__user__first_name__contains=name) | Q(author__user__last_name__contains=name)).order_by('-date_posted')
+            posts = Post.objects.filter( Q(paper__title__icontains=name) | Q(paper__authors__user__username__icontains=name) |  Q(content__icontains=name) | Q(author__user__username__icontains=name) | Q(author__user__first_name__icontains=name) | Q(author__user__last_name__icontains=name)).order_by('-date_posted')
 
             #running both the scraping parallely
             with concurrent.futures.ThreadPoolExecutor() as executor : 
