@@ -11,7 +11,7 @@ Project by Team PatanjaliHax for the Problem Statement KB141 given by Government
 [Bootstrap](https://getbootstrap.com)
 
 
-![Presentation](https://docs.google.com/presentation/d/1rpo1KZ37wxTqblmKbn9mhnkT26JYccbN5ZRfAkgsz08/edit?usp=sharing)
+[Presentation](https://docs.google.com/presentation/d/1rpo1KZ37wxTqblmKbn9mhnkT26JYccbN5ZRfAkgsz08/edit?usp=sharing)
 
 ### Installation Guide
 
