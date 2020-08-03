@@ -9,5 +9,6 @@ class research_paper_form(ModelForm):
             'file',
             'title',
             'authors',
-            'tags'
+            'tags',
+            'private'
         ]
