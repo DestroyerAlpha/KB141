@@ -78,15 +78,9 @@ def rs_filter(request):
         if name != "" :
             name = name.lstrip()
             search = True
-<<<<<<< HEAD
-            #for users(students) filter 
-            userbyname = Profile_student.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
-            userbycollege = Profile_student.objects.filter(institution__icontains = name)
-=======
             #for users(students) filter
             userbyname = Profile_student.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
             userbycollege = Profile_student.objects.filter(institution__contains = name)
->>>>>>> develop
 
             #for users(company)
             cuserbyname = Profile_corporate.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
