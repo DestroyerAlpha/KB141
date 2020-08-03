@@ -36,3 +36,7 @@ open the admin page and login using super user credentials
 Create an user and add tags into appropriate tables.  
 Add the restricted.pdf in research paper table and add the id of the restricted.pdf feed/views.py PaperPostCreateView class.  
 
+
+
+![profile](https://user-images.githubusercontent.com/46635452/89172684-a3559500-d5a0-11ea-940c-c3b63cf63f6e.png)
+
