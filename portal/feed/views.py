@@ -160,7 +160,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.remove(profile)
             for author in post.paper.authors.all():
                 author.rating -= 100
-            author.save()
+                author.save()
     else:
         post.post_like.add(request.user)
 
@@ -174,7 +174,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.add(profile)
             for author in post.paper.authors.all():
                 author.rating += 100
-            author.save()
+                author.save()
     return redirect('post-detail', post.id)
 
 def CommentLikeView(request, commentid, postid):
