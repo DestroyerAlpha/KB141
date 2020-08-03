@@ -3,7 +3,7 @@
 <script>
 $(window).bind("pageshow", function(event) {
     if (event.originalEvent.persisted) {
-        window.location.reload(); 
+        window.location.reload();
     }
 });
 </script>
@@ -97,14 +97,14 @@ $(window).bind("pageshow", function(event) {
                         <p>
                             {{ post.content }}
                         </p>
-                        
+
                           {% if post.paper != None %}
                           <p> Authors:
                             {% for authors in post.paper.authors.all %}
                               <a href="{% url 'user-profile' authors %}">{{ authors }}</a>;
                             {% endfor %}
                             <p>
-                            <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                            <a href="{% url 'website-home' %}media/{{ post.paper.file }}">Click here for the full paper</a>
                             </p>
                           {% endif %}
                         <p class="small text-muted mt-2 mb-0">
