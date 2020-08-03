@@ -97,11 +97,16 @@ $(window).bind("pageshow", function(event) {
                         <p>
                             {{ post.content }}
                         </p>
-                        <p>
+                        
                           {% if post.paper != None %}
+                          <p> Authors:
+                            {% for authors in post.paper.authors.all %}
+                              <a href="{% url 'user-profile' authors %}">{{ authors }}</a>;
+                            {% endfor %}
+                            <p>
                             <a href="{% url 'website-home' %}{{ post.paper.file }}">Click here for the full paper</a>
+                            </p>
                           {% endif %}
-                        </p>
                         <p class="small text-muted mt-2 mb-0">
                         <a href="{% url 'post-detail' post.id %}">
                             <span>
