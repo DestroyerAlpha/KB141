@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.forms import ModelForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -38,7 +39,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
         poster = Post.objects.filter(author__in = users).order_by('-date_posted')
         return poster
 
-
+@login_required
 def user_post(request):
     users = User.objects.filter(username=request.user.username)
     try:
@@ -46,12 +47,18 @@ def user_post(request):
     except:
         profile = Profile_corporate.objects.get(user__in = users)
     users = profile.authors_followed.all()
-    authors_followed_list_ids = [person.id for person in request.user.profile.authors_followed.all()]
+    try:
+        authors_followed_list_ids = [person.id for person in request.user.profile.authors_followed.all()]
 
-    recommended_users = Profile_student.objects.filter(rating__gte=request.user.profile.rating-300).exclude(id__in=authors_followed_list_ids)
-    context = {'user': request.user, 'posts': Post.objects.filter(author__in=users).order_by('-date_posted'), 'recommended_users': recommended_users}
+        recommended_users = Profile_student.objects.filter(rating__gte=request.user.profile.rating-300).exclude(id__in=authors_followed_list_ids)
+        posts = Post.objects.filter(author__in=users).order_by('-date_posted')
+    except:
+        recommended_users = None
+        posts = None
 
-    print(authors_followed_list_ids, '*'*10)
+    context = {'user': request.user, 'posts': posts, 'recommended_users': recommended_users}
+
+    # print(authors_followed_list_ids, '*'*10)
     return render(request, 'feed/feed.html', context)
 
 class UserPostSaveView(LoginRequiredMixin, ListView):
@@ -69,7 +76,10 @@ class UserPostView(LoginRequiredMixin, ListView):
             profile = Profile_student.objects.get(user = user)
         except:
             profile = Profile_corporate.objects.get(user = user)
-        return Post.objects.filter(author=profile).order_by('-date_posted')
+        try:
+            return Post.objects.filter(author=profile).order_by('-date_posted')
+        except:
+            return None
 
     def get_context_data(self, *args, **kwargs):
         context = super(UserPostView, self).get_context_data(*args, **kwargs)
@@ -160,7 +170,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.remove(profile)
             for author in post.paper.authors.all():
                 author.rating -= 100
-            author.save()
+                author.save()
     else:
         post.post_like.add(request.user)
 
@@ -174,7 +184,7 @@ def PostLikeView(request, postid):
             post.paper.liked_by.add(profile)
             for author in post.paper.authors.all():
                 author.rating += 100
-            author.save()
+                author.save()
     return redirect('post-detail', post.id)
 
 def CommentLikeView(request, commentid, postid):

@@ -12,24 +12,21 @@ from feed.models import Post
 
 def home(request):
     try:
-        username = request.user.username
-        # search for user in user model. this is being passed to template
-        requested_user = User.objects.get(username=username)
         # search for user whose profile is begin searched
-        searched_user = User.objects.filter(username = username)
+        searched_user = request.user
         try:
             # search student profile models by user which could be passed to profile.html to display information
-            profile = Profile_student.objects.get(user__in = searched_user)
+            profile = Profile_student.objects.get(user = searched_user)
         except:
             # search corporate profile models by user which could be passed to profile.html to display information
-            profile = Profile_corporate.objects.get(user__in = searched_user)
+            profile = Profile_corporate.objects.get(user = searched_user)
         profile.authors_followed.add(profile)
         return render(request, 'home/home.html')
     except:
         return render(request, 'home/home.html')
 
 def rs_filter(request):
-    
+
 	#autocomplete
     if 'term' in request.GET:
         print('\n\n')
@@ -81,9 +78,15 @@ def rs_filter(request):
         if name != "" :
             name = name.lstrip()
             search = True
+<<<<<<< HEAD
             #for users(students) filter 
             userbyname = Profile_student.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
             userbycollege = Profile_student.objects.filter(institution__icontains = name)
+=======
+            #for users(students) filter
+            userbyname = Profile_student.objects.filter( Q(user__username__contains=name) | Q(user__first_name__contains=name) | Q(user__last_name__contains=name))
+            userbycollege = Profile_student.objects.filter(institution__contains = name)
+>>>>>>> develop
 
             #for users(company)
             cuserbyname = Profile_corporate.objects.filter( Q(user__username__icontains=name) | Q(user__first_name__icontains=name) | Q(user__last_name__icontains=name))
@@ -99,12 +102,12 @@ def rs_filter(request):
                     papersbytag = papersbytag.filter(tags__tag__iexact=tag)
 
             papersbytag = papersbytag.distinct().order_by('-created_on')
-                
+
 
             posts = Post.objects.filter( Q(paper__title__icontains=name) | Q(paper__authors__user__username__icontains=name) |  Q(content__icontains=name) | Q(author__user__username__icontains=name) | Q(author__user__first_name__icontains=name) | Q(author__user__last_name__icontains=name)).order_by('-date_posted')
 
             #running both the scraping parallely
-            with concurrent.futures.ThreadPoolExecutor() as executor : 
+            with concurrent.futures.ThreadPoolExecutor() as executor :
                 to_do = [executor.submit(gscraper,name),
                          executor.submit(rgscraper,name)]
 
@@ -112,7 +115,7 @@ def rs_filter(request):
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
             postpapers.append(po)
-    
+
     for p in papersbytitle:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -122,7 +125,7 @@ def rs_filter(request):
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
             postpapersbyauth.append(po)
-    
+
     for p in papersbytag:
         post = Post.objects.filter(paper__id = p.id)
         for po in post:
@@ -151,7 +154,7 @@ def rs_filter(request):
     }
     return render(request, 'home/rs_filter.html', rtn)
 
-#using global variables 
+#using global variables
 gsearch = []
 rgsearch = []
 
@@ -163,16 +166,16 @@ def gscraper(name):
     glink = []
     gtext = []
     gcites = []
-    
+
     searchresults = soup.select('.gs_rt a')
     for result in searchresults:
         gtitle.append(''.join(result.findAll(text=True)))
         glink.append(result.get('href'))
-    
+
     searchresults = soup.select('.gs_rs')
     for result in searchresults:
         gtext.append(''.join(result.findAll(text=True)))
-    
+
     searchresults = soup.select('.gs_fl a:nth-of-type(3)')
     for results in searchresults:
         gcites.append(results.text)
