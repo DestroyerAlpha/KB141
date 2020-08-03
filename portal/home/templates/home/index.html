@@ -12,7 +12,7 @@
 {% load static %}
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <!-- jquery needs to be loaded first of all. Don't change load any of the other links before it. -->
 <script src = "https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -77,11 +77,24 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <form class="form-inline" action="{% url 'rsfilter' %}" method="POST">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                <input class="form-control mr-sm-2" type="search" name="search" id="supersearch" placeholder="Search" aria-label="Search">
                 <button class="btn btn-default" style="background-color: aliceblue; color: cornflowerblue;" type="submit">
                     Go!
                 </button>
             </form>
+
+                <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                <script>
+                    $( function() {
+                    $( "#supersearch" ).autocomplete({
+                        source: "{% url 'rsfilter' %}"
+                    });
+                    } );
+                    </script>
+
+
+            
         </div>
     </nav>
     {% for message in messages %}
