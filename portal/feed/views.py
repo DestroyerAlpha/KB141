@@ -153,6 +153,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+@login_required
 def PostLikeView(request, postid):
     post = Post.objects.get(id=postid)
     if request.user in post.post_like.all():
@@ -192,6 +193,7 @@ def CommentLikeView(request, commentid, postid):
         comment.comment_like.add(request.user)
     return redirect('post-detail', postid)
 
+@login_required
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
